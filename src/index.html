@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Native Rating WebComponent</title>
+    <script type="module" src="rating.js"></script>
+</head>
+<body>
+    <web-component-rating id="rating" rating="5" max-rating="10" disabled="true">
+    </web-component-rating>
+    <script>
+        document.getElementById('rating').addEventListener('ratingChanged', (value) => {
+            console.log(value.detail);
+        });
+    </script>
+</body>
+</html>
