@@ -16,8 +16,12 @@ div[disabled] {
     filter: grayscale(1);
     pointer-events: none;
 }
-div ::slotted([slot="rating-icon"]) {
-    display: none;
+div ::slotted(img) {
+    width: 60px;
+    height: 60px;
+}
+div ::slotted(p) {
+    font-size: 16px;
 }
 
 .rating-item {
@@ -55,10 +59,12 @@ export class Rating extends HTMLElement {
         this.element = this.shadowRoot.querySelector('div');
 
         const slot = this.shadowRoot.querySelector('slot[name="rating-icon"]');
+        this.slotNode = slot.childNodes[1];
         slot.addEventListener('slotchange', e => {
             const assignedNodes = slot.assignedNodes();
             if (assignedNodes[0]) {
                 this.slotNode = assignedNodes[0];
+                console.log(this.slotNode);
                 this.render();
             }
         });
@@ -111,15 +117,16 @@ export class Rating extends HTMLElement {
         if (!this.maxRating) {
             this.maxRating = 5;
         }
+        this.dispatchEvent(new CustomEvent('ratingChanged', { detail: this.rating }));
         this.render();
     }
 
     attributeChangedCallback(name, oldVal, newVal) {
-        if(oldVal === newVal) {
+        if (oldVal === newVal) {
             return;
         }
 
-        if(name === 'rating') {
+        if (name === 'rating') {
             this.updateRating();
         } else {
             this.render();
@@ -129,7 +136,7 @@ export class Rating extends HTMLElement {
     render() {
         this.clearRatingElements();
         for (let i = 0; i < this.maxRating; i++) {
-            this.createRatingStar(i < this.rating, i);
+            this.createRatingStar(i < this.rating, i + 1);
         }
         this.setDisabled(this.element, this.disabled);
     }
@@ -137,7 +144,7 @@ export class Rating extends HTMLElement {
     clearRatingElements() {
         const nodes = this.element.getElementsByClassName('rating-item');
         if (nodes) {
-            while(nodes.length > 0){
+            while (nodes.length > 0) {
                 nodes[0].parentNode.removeChild(nodes[0]);
             }
         }
@@ -146,11 +153,7 @@ export class Rating extends HTMLElement {
     createRatingStar(filled, i) {
         const ratingTemplate = document.createElement('div');
         ratingTemplate.className = filled ? `rating-item item-${i} filled` : `rating-item item-${i}`;
-
-        if (this.slotNode) {
-            ratingTemplate.appendChild(this.slotNode.cloneNode(true));
-        }
-
+        ratingTemplate.appendChild(this.slotNode.cloneNode(true));
         this.element.appendChild(ratingTemplate);
         let item = this.element.getElementsByClassName(`item-${i}`)[0];
         item.addEventListener('click', value => {
