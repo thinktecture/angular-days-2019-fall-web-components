@@ -5,20 +5,27 @@
     <title>Native Rating WebComponent</title>
     <script type="module" src="rating.js"></script>
 </head>
+<style>
+    body {
+        text-align: center;
+    }
+    img {
+        width: 60px;
+        height: 60px;
+    }
+    /*CSS: shadow-part*/
+    web-component-rating::part(test):hover {
+        background-color: deeppink;
+    }
+</style>
 <body>
-    <style>
-        body {
-            text-align: center;
-        }
-    </style>
     <web-component-rating id="rating" rating="5" max-rating="10">
-        <p>Hello World</p>
+        <img slot="rating-icon" src="assets/replace-star.png">
     </web-component-rating>
-    <p id="rating-text"></p>
+    <span></span>
     <script>
-        let ratingResult = document.getElementById('rating-text');
+        let ratingResult = document.querySelector('span');
         document.getElementById('rating').addEventListener('ratingChanged', (value) => {
-            console.log(value.detail);
             ratingResult.innerText = `Rating changed to ${value.detail}`;
         });
     </script>

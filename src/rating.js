@@ -5,32 +5,41 @@ div {
     display: flex;
     justify-content: center;
 }
+img {
+    width: 60px;
+    height: 60px;
+}
+slot {
+   display: none; 
+}
 div[disabled] {
     filter: grayscale(1);
     pointer-events: none;
 }
-div::slotted > .rating-item {
-    background: none;
-}
-
-div > .rating-item:hover ~ .rating-item:before{
-    filter: none;
+div ::slotted([slot="rating-icon"]) {
+    display: none;
 }
 
 .rating-item {
+    filter: grayscale(100%);
+    cursor: pointer;
+}
+
+.rating-item.filled {
+    filter: none;
+}
+
+.rating-star {
     background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 166 166"><polygon fill="greenyellow" points="83 26.8 65.7 61.8 27.1 67.4 55 94.7 48.5 133.2 83 115 117.5 133.2 111 94.7 138.9 67.4 100.3 61.8 83 26.8 83 26.8"/></svg>');
     background-repeat: no-repeat;
     width: 60px;
     height: 60px;
-    filter: grayscale(100%);
-    cursor: pointer;
-}
-.rating-item.filled {
-    filter: none;
 }
 </style>
-<div>
-    <slot></slot>
+<div part="test">
+    <slot name="rating-icon">
+        <div class="rating-star"></div>
+    </slot>
 </div>
 `;
 
@@ -45,9 +54,13 @@ export class Rating extends HTMLElement {
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         this.element = this.shadowRoot.querySelector('div');
 
-        const slot = this.shadowRoot.querySelector('slot');
+        const slot = this.shadowRoot.querySelector('slot[name="rating-icon"]');
         slot.addEventListener('slotchange', e => {
-            console.log(slot.assignedNodes());
+            const assignedNodes = slot.assignedNodes();
+            if (assignedNodes[0]) {
+                this.slotNode = assignedNodes[0];
+                this.render();
+            }
         });
     }
 
@@ -102,21 +115,41 @@ export class Rating extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldVal, newVal) {
-        this.render();
+        if(oldVal === newVal) {
+            return;
+        }
+
+        if(name === 'rating') {
+            this.updateRating();
+        } else {
+            this.render();
+        }
     }
 
     render() {
-        this.element.innerHTML = '';
+        this.clearRatingElements();
         for (let i = 0; i < this.maxRating; i++) {
-            this.createRatingStars(i < this.rating, i + 1);
+            this.createRatingStar(i < this.rating, i);
         }
         this.setDisabled(this.element, this.disabled);
     }
 
-    // refactor this, maybe here is a sweeter way to do this
-    createRatingStars(filled, i) {
+    clearRatingElements() {
+        const nodes = this.element.getElementsByClassName('rating-item');
+        if (nodes) {
+            while(nodes.length > 0){
+                nodes[0].parentNode.removeChild(nodes[0]);
+            }
+        }
+    }
+
+    createRatingStar(filled, i) {
         const ratingTemplate = document.createElement('div');
         ratingTemplate.className = filled ? `rating-item item-${i} filled` : `rating-item item-${i}`;
+
+        if (this.slotNode) {
+            ratingTemplate.appendChild(this.slotNode.cloneNode(true));
+        }
 
         this.element.appendChild(ratingTemplate);
         let item = this.element.getElementsByClassName(`item-${i}`)[0];
@@ -129,12 +162,14 @@ export class Rating extends HTMLElement {
         for (let i = 0; i < this.maxRating; i++) {
             let currentRating = i + 1;
             let item = this.element.getElementsByClassName(`item-${currentRating}`)[0];
-            if (currentRating <= this.rating) {
-                if (item.className.indexOf('filled') < 0) {
-                    item.className = item.className + ' filled';
+            if (item) {
+                if (currentRating <= this.rating) {
+                    if (item.className.indexOf('filled') < 0) {
+                        item.className = item.className + ' filled';
+                    }
+                } else {
+                    item.className = item.className.replace('filled', '');
                 }
-            } else {
-                item.className = item.className.replace('filled', '');
             }
         }
     }
