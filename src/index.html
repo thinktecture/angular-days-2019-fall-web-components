@@ -6,11 +6,20 @@
     <script type="module" src="rating.js"></script>
 </head>
 <body>
-    <web-component-rating id="rating" rating="5" max-rating="10" disabled="true">
+    <style>
+        body {
+            text-align: center;
+        }
+    </style>
+    <web-component-rating id="rating" rating="5" max-rating="10">
+        <p>Hello World</p>
     </web-component-rating>
+    <p id="rating-text"></p>
     <script>
+        let ratingResult = document.getElementById('rating-text');
         document.getElementById('rating').addEventListener('ratingChanged', (value) => {
             console.log(value.detail);
+            ratingResult.innerText = `Rating changed to ${value.detail}`;
         });
     </script>
 </body>

@@ -1,7 +1,7 @@
 module.exports = {
     mode: 'production',
     entry: {
-        'rating': './src/button.js',
+        'rating': './src/rating.js',
     },
     output: {
         filename: 'native-web-rating.js',
