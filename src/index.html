@@ -21,19 +21,23 @@
     }
 </style>
 <body>
-    <web-component-rating rating="5" max-rating="10">
-        <p slot="title">Rating 1</p>
-        <img slot="rating-icon" src="assets/replace-star.png">
-    </web-component-rating>
+    <web-component-rating></web-component-rating>
     <span></span>
+    <web-component-rating rating="2"></web-component-rating>
+    <web-component-rating max-rating="6"></web-component-rating>
+    <web-component-rating max-rating="7" rating="3"></web-component-rating>
     <web-component-rating>
         <img slot="rating-icon" src="assets/replace-star.png">
     </web-component-rating>
-    <web-component-rating rating="3">
+    <web-component-rating rating="4">
+        <img slot="rating-icon" src="assets/replace-star.png">
     </web-component-rating>
-    <web-component-rating max-rating="15">
+    <web-component-rating max-rating="6">
+        <img slot="rating-icon" src="assets/replace-star.png">
     </web-component-rating>
-    <web-component-rating rating="2" max-rating="7">
+    <web-component-rating rating="5" max-rating="7">
+        <p slot="title">Rating 1</p>
+        <img slot="rating-icon" src="assets/replace-star.png">
     </web-component-rating>
     <script>
         // sample to show how often or when the attributeChange is called.
