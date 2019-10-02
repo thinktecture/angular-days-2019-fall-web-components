@@ -1,9 +1,11 @@
 const template = document.createElement('template');
+document.body.appendChild(template);
 template.innerHTML = `
 <style>
 div {
     display: flex;
     justify-content: center;
+    flex-direction: row-reverse;
 }
 img {
     width: 60px;
@@ -33,6 +35,10 @@ div ::slotted(p) {
     filter: none;
 }
 
+.rating-item:hover, .rating-item:hover ~ .rating-item {
+    filter: none;
+}
+
 .rating-star {
     background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 166 166"><polygon fill="greenyellow" points="83 26.8 65.7 61.8 27.1 67.4 55 94.7 48.5 133.2 83 115 117.5 133.2 111 94.7 138.9 67.4 100.3 61.8 83 26.8 83 26.8"/></svg>');
     background-repeat: no-repeat;
@@ -40,7 +46,7 @@ div ::slotted(p) {
     height: 60px;
 }
 </style>
-<div part="test">
+<div part="rating">
     <slot name="rating-icon">
         <div class="rating-star"></div>
     </slot>
@@ -64,7 +70,6 @@ export class Rating extends HTMLElement {
             const assignedNodes = slot.assignedNodes();
             if (assignedNodes[0]) {
                 this.slotNode = assignedNodes[0];
-                console.log(this.slotNode);
                 this.render();
             }
         });
@@ -122,21 +127,32 @@ export class Rating extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldVal, newVal) {
+        console.log('attribute changed', name, oldVal, newVal);
         if (oldVal === newVal) {
             return;
         }
 
-        if (name === 'rating') {
-            this.updateRating();
-        } else {
-            this.render();
+        switch (name) {
+            case 'rating':
+                this.updateRating();
+                break;
+            case 'disabled':
+                this.setDisabled(this.element, this.disabled);
+                break;
+            default:
+                this.render();
+                break;
         }
     }
 
     render() {
         this.clearRatingElements();
-        for (let i = 0; i < this.maxRating; i++) {
-            this.createRatingStar(i < this.rating, i + 1);
+        let index = 1;
+        for (let i = this.maxRating; i > 0; i--) {
+            i = parseInt(i);
+            const filled = this.rating ? this.rating >= i : false;
+            this.createRatingStar(filled, i);
+            index++;
         }
         this.setDisabled(this.element, this.disabled);
     }
@@ -150,14 +166,14 @@ export class Rating extends HTMLElement {
         }
     }
 
-    createRatingStar(filled, i) {
+    createRatingStar(filled, itemId) {
         const ratingTemplate = document.createElement('div');
-        ratingTemplate.className = filled ? `rating-item item-${i} filled` : `rating-item item-${i}`;
+        ratingTemplate.className = filled ? `rating-item item-${itemId} filled` : `rating-item item-${itemId}`;
         ratingTemplate.appendChild(this.slotNode.cloneNode(true));
         this.element.appendChild(ratingTemplate);
-        let item = this.element.getElementsByClassName(`item-${i}`)[0];
+        let item = this.element.getElementsByClassName(`item-${itemId}`)[0];
         item.addEventListener('click', value => {
-            this.changeRating(i);
+            this.changeRating(itemId);
         });
     }
 

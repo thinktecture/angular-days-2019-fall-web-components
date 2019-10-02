@@ -10,25 +10,40 @@
         text-align: center;
     }
     /*CSS: shadow-part*/
-    web-component-rating::part(test):hover {
-        background-color: deeppink;
+    web-component-rating::part(rating) {
+        padding: 16px;
+    }
+    web-component-rating::part(rating):hover {
+        background-color: darkslategray;
+        color: white;
+        box-shadow: inset 0 0 1em gold, 0 0 1em red;
+        border-radius: 5px;
     }
 </style>
 <body>
     <web-component-rating rating="5" max-rating="10">
+        <p slot="title">Rating 1</p>
         <img slot="rating-icon" src="assets/replace-star.png">
     </web-component-rating>
     <span></span>
     <web-component-rating>
         <img slot="rating-icon" src="assets/replace-star.png">
     </web-component-rating>
-    <web-component-rating>
+    <web-component-rating rating="3">
     </web-component-rating>
     <web-component-rating max-rating="15">
     </web-component-rating>
     <web-component-rating rating="2" max-rating="7">
     </web-component-rating>
     <script>
+        // sample to show how often or when the attributeChange is called.
+        /*function init() {
+            const rating = document.querySelector('web-component-rating');
+            setInterval(() => {
+                rating.setAttribute('rating', Math.round(Math.random() * 10));
+            }, 2500);
+        }
+        init();*/
         let ratingResult = document.querySelector('span');
         document.querySelector('web-component-rating').addEventListener('ratingChanged', (value) => {
             ratingResult.innerText = `Rating changed to ${value.detail}`;
