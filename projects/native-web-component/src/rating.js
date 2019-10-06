@@ -1,5 +1,4 @@
 const template = document.createElement('template');
-document.body.appendChild(template);
 template.innerHTML = `
 <style>
 /*tag styles*/

@@ -4,8 +4,10 @@
   "scripts": {
     "start": "webpack-dev-server src/index.html",
     "build-wc": "npm run build-wc:clean && npm run build-wc:webpack",
+    "wc:publish": "cp -r dist/* ../ng-app/wc-sample/src/assets/",
     "build-wc:clean": "rm -rf dist && mkdir dist",
-    "build-wc:webpack": "webpack"
+    "build-wc:webpack": "webpack",
+    "deploy-wc": "npm run build-wc && npm run wc:publish"
   },
   "dependencies": {},
   "devDependencies": {
