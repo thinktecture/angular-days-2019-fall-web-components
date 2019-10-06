@@ -86,6 +86,13 @@ export class Rating extends HTMLElement {
     }
 
     set rating(value) {
+        console.log('set rating to value', value);
+        if (value < 0) {
+            throw new Error('The rating must be higher than zero.');
+        }
+        if (value > this.maxRating) {
+            throw new Error('The rating must be lower than the maximum.');
+        }
         this.setAttribute('rating', value);
     }
 
@@ -111,10 +118,14 @@ export class Rating extends HTMLElement {
         // set default value for maximal rating value
         if (!this.maxRating) {
             this.maxRating = 5;
+        } else if(this.maxRating < 0) {
+            throw new Error('The rating must be higher than zero.');
         }
         // set default value for rating
         if (!this.rating) {
             this.rating = 0;
+        } else if (this.rating < 0 || this.rating > this.maxRating) {
+            throw new Error('The rating must be higher than zero and lower than the maximum.');
         }
         this.dispatchEvent(new CustomEvent('ratingChanged', { detail: this.rating }));
         this.render();
