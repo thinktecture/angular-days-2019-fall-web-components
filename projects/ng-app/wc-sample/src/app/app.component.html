@@ -1,1 +1,3 @@
-<web-component-rating></web-component-rating>
+<web-component-rating *ngFor="let r of ratings" [maxRating]="r.maxRating" [rating]="r.rating" (ratingChanged)="onRatingChanged($event)">
+    <img src="../assets/replace-star.png" slot="rating-icon" />
+</web-component-rating>

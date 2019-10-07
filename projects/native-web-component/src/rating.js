@@ -73,7 +73,7 @@ export class Rating extends HTMLElement {
 
     // Properties
     get maxRating() {
-        return this.getAttribute('max-rating');
+        return +this.getAttribute('max-rating');
     }
 
     set maxRating(value) {
@@ -81,7 +81,7 @@ export class Rating extends HTMLElement {
     }
 
     get rating() {
-        return this.getAttribute('rating');
+        return +this.getAttribute('rating');
     }
 
     set rating(value) {
@@ -89,7 +89,8 @@ export class Rating extends HTMLElement {
         if (value < 0) {
             throw new Error('The rating must be higher than zero.');
         }
-        if (value > this.maxRating) {
+        const currentRating = +value;
+        if (currentRating > this.maxRating) {
             throw new Error('The rating must be lower than the maximum.');
         }
         this.setAttribute('rating', value);
@@ -138,7 +139,12 @@ export class Rating extends HTMLElement {
 
         switch (name) {
             case 'rating':
+                this.rating = newVal;
                 this.updateRating();
+                break;
+            case 'max-rating': 
+                this.maxRating = newVal;
+                this.render();
                 break;
             case 'disabled':
                 this.setDisabled(this.element, this.disabled);
@@ -147,6 +153,8 @@ export class Rating extends HTMLElement {
                 this.render();
                 break;
         }
+
+        // this[name] = newVal;
     }
 
     render() {

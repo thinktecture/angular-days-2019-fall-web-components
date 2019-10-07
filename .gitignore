@@ -44,3 +44,4 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+/projects/ng-app/wc-sample/src/assets/native-web-rating.js
