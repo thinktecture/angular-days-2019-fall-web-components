@@ -1,5 +1,7 @@
 # angular-days-2019-fall-web-components
 
+Slides: [https://speakerdeck.com/manuelrauber/webcomponents-native-komponenten-furs-web-ohne-und-mit-frameworks](https://speakerdeck.com/manuelrauber/webcomponents-native-komponenten-furs-web-ohne-und-mit-frameworks)
+
 ## Initial setup native webcomponent
 - Switch into folder `native-web-component`
 - run `npm install` to install all dependencies
